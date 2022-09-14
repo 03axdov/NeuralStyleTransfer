@@ -8,6 +8,6 @@ Generate an image in the style of another image. Example: The first two images a
 The way neural style transfer works is by focusing on different layers of the network, for styling and content, as these are the two things the model needs to get right.
 The styling would in this case be the colors, sharp edges etc. while the content would be the dog. The model focuses on the style layers when the style input is passed through it, and the content layer(s) when the content input is passed through it.
 
-It then attempts to generate an image that maximizes the similarities between its own and the respective layers of the input images. There are several fast ways to generate an image. This implementation starts off with the content image and then gradually changes it to maximize its similarities on the styling layers. The two losses for styling and content are combined and, as usual, passed to the optimizer etc.
+It then attempts to generate an image that maximizes the similarities between its own and the respective layers of the input images. There are several fast ways to generate an image. This implementation starts off with the content image and then gradually changes it to maximize its similarities on the styling layers. The two losses for styling and content are combined according to a specified ratio (style * 1e-2, content * 1e4 in this case) and, as usual, passed to the optimizer etc.
 
 Paper: <a href="https://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a>
