@@ -9,3 +9,5 @@ The way neural style transfer works is by focusing on different layers of the ne
 The styling would in this case be the colors, sharp edges etc. while the content would be the dog. The model focuses on the style layers when the style input is passed through it, and the content layer(s) when the content input is passed through it.
 
 It then attempts to generate an image that maximizes the similarities between its own and the respective layers of the input images. There are several fast ways to generate an image. This implementation starts off with the content image and then gradually changes it to maximize its similarities on the styling layers.
+
+Paper: <a href="https://arxiv.org/abs/1508.06576">A Neural Algorithm of Artistic Style</a>
