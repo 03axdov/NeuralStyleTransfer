@@ -97,6 +97,12 @@ def main():
     style_targets = extractor(style_image)['style']
     content_targets = extractor(content_image)['content']
 
+    image = tf.Variable(content_image)
+
+    opt = tf.keras.optimizers.Adam(learning_rate=0.02, epsilon=1e-1, beta_1=0.99)
+
+    style_weight = 1e-2
+    content_weight = 1e4
 
 if __name__ == "__main__":
     main()

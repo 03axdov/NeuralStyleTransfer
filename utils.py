@@ -42,3 +42,11 @@ def gram_matrix(input_tensor):
   input_shape = tf.shape(input_tensor)
   num_locations = tf.cast(input_shape[1]*input_shape[2], tf.float32)
   return result / (num_locations)
+
+
+def clip_0_1(image):
+  return tf.clip_by_value(image, clip_value_min=0.0, clip_value_max=1.0)
+
+
+def style_content_loss(outputs):
+  pass
