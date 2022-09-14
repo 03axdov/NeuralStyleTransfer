@@ -52,5 +52,51 @@ def main():
     for layer in vgg.layers:
         print(layer.name)
 
+    content_layers = ['block5_conv2']
+
+    style_layers = ['block1_conv1',
+                    'block2_conv1',
+                    'block3_conv1',
+                    'block4_conv1',
+                    'block5_conv1']
+
+    num_content_layers = len(content_layers)
+    num_style_layers = len(style_layers)
+    
+    style_extractor = vgg_layers(style_layers)
+    style_outputs = style_extractor(style_image * 255)
+
+    for name, output in zip(style_layers, style_outputs):
+        print(name)
+        print("  shape: ", output.numpy().shape)
+        print("  min: ", output.numpy().min())
+        print("  max: ", output.numpy().max())
+        print("  mean: ", output.numpy().mean())
+        print()
+
+    extractor = StyleContentModel(style_layers, content_layers)
+    results = extractor(tf.constant(content_image))
+
+    print("Styles:")
+    for name, output in sorted(results['style'].items()):
+        print("  ", name)
+        print("    shape: ", output.numpy().shape)
+        print("    min: ", output.numpy().min())
+        print("    max: ", output.numpy().max())
+        print("    mean: ", output.numpy().mean())
+        print()
+
+    print("Contents:")
+    for name, output in sorted(results['content'].items()):
+        print("  ", name)
+        print("    shape: ", output.numpy().shape)
+        print("    min: ", output.numpy().min())
+        print("    max: ", output.numpy().max())
+        print("    mean: ", output.numpy().mean())
+
+    style_targets = extractor(style_image)['style']
+    content_targets = extractor(content_image)['content']
+
+
 if __name__ == "__main__":
     main()
