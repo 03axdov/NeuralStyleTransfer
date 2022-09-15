@@ -50,3 +50,11 @@ def clip_0_1(image):
 
 def style_content_loss(outputs):
   pass
+
+
+
+def high_pass_x_y(image):
+    x_var = image[:, :, 1:, :] - image[:, :, :-1, :]
+    y_var = image[:, 1:, :, :] - image[:, :-1, :, :]
+
+    return x_var, y_var

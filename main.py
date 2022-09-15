@@ -13,7 +13,7 @@ import time
 import functools
 import PIL.Image
 
-from utils import tensor_to_image, load_img, imshow
+from utils import *
 from models import *
 
 def main():
@@ -103,6 +103,59 @@ def main():
 
     style_weight = 1e-2
     content_weight = 1e4
+
+    def style_content_loss(outputs):
+        style_outputs = outputs["style"]
+        content_outputs = outputs["content"]
+
+        style_loss = tf.add_n([tf.reduce_mean((style_outputs[name] - style_targets[name]) ** 2)
+                            for name in style_outputs.keys()])
+
+        style_loss *= style_weight / num_style_layers
+
+        content_loss = tf.add_n([tf.reduce_mean((content_outputs[name] - content_targets[name]) ** 2)
+                            for name in content_outputs.keys()])
+
+        content_loss *= content_weight / num_content_layers
+        loss = style_loss + content_loss
+        return loss
+
+    @tf.function
+    def train_step(image):
+        with tf.GradientTape() as tape:
+            outputs = extractor(image)
+            loss = style_content_loss(outputs)
+
+        grad = tape.gradient(loss, image)
+        opt.apply_gradients([(grad, image)])
+        image.assign(clip_0_1(image))
+
+    # for _ in range(5):
+    #     train_step(image)
+
+    # img = tensor_to_image(image)
+    # img.show()
+
+
+    start = time.time()
+
+    epochs = 10
+    steps_per_epoch = 100
+
+    step = 0
+    for n in range(epochs):
+        for m in range(steps_per_epoch):
+            step += 1
+            train_step(image)
+            print(".", end='', flush=True)
+
+        print("Train step: {}".format(step))
+    end = time.time()
+
+    print("Total time: {:.1f}".format(end-start))
+    image = tensor_to_image(image)
+    image.show()
+
 
 if __name__ == "__main__":
     main()

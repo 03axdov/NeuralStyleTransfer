@@ -1,5 +1,6 @@
 import tensorflow as tf
 import tensorflow_hub as hub
+from utils import *
 
 def pretrained_model():
     hub_model = hub.load('https://tfhub.dev/google/magenta/arbitrary-image-stylization-v1-256/2')
@@ -36,6 +37,9 @@ class StyleContentModel(tf.keras.Model):
 
         style_outputs, content_outputs = (outputs[:self.num_style_layers],
                                             outputs[self.num_style_layers:])
+
+        style_outputs = [gram_matrix(style_output)
+                     for style_output in style_outputs]
 
         content_dict = {content_name: value for content_name, value in zip(self.content_layers, content_outputs)}
         style_dict = {style_name: value for style_name, value in zip(self.style_layers, style_outputs)}
